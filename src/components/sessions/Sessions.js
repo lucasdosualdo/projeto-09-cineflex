@@ -4,25 +4,6 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import styled from 'styled-components';
 
-function Session({ weekday, date, showtimes }) {
-    return (
-        <>
-            <Data>
-                <p>{`${weekday} - ${date}`}</p>
-            </Data>
-            <Hours>
-                <Session showtimes={showtimes} />
-            </Hours>
-
-            {showtimes.map(showtime =>
-                <Hour>
-                    <p>{showtime.name}</p>
-                </Hour>
-            )}
-        </>
-    )
-}
-
 export default function Sessions() {
     const { idFilme } = useParams();
     const [sessions, setSessions] = useState([]);
@@ -43,13 +24,25 @@ export default function Sessions() {
                     <h1>CINEFLEX</h1>
                 </div>
             </Link>
+
             <div className="select">
                 <h3>Selecione o horário</h3>
             </div>
             <Container>
                 {
                     sessions.map((session, index) =>
-                        <Session key={index} weekday={session.weekday} date={session.date} showtimes={session.showtimes} />
+                        <>
+                            <Data>
+                                <p>{`${session.weekday} - ${session.date}`}</p>
+                            </Data>
+                            <Hours>
+                                {session.showtimes.map(showtime =>
+                                    <Hour>
+                                        <p>{showtime.name}</p>
+                                    </Hour>
+                                )}
+                            </Hours>
+                        </>
                     )
                 }
             </Container>
