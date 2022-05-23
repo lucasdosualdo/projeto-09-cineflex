@@ -12,20 +12,30 @@ export default function Films() {
         });
 
     }, [])
-    return (
+    return (<>
+     <div className="header">
+        <h1>CINEFLEX</h1>
+    </div>
+    <div className="select">
+        <h3>Selecione o filme</h3>
+    </div>
         <Container>
             {
-                films.map(film => <Film id={film.id} title={film.title} posterURL={film.posterURL} overview={film.overview} releaseDate={film.releaseDate} />)
+                films.map(film => <Film id={film.id} posterURL={film.posterURL} />)
             }
         </Container>
+    </>
+       
     )
 }
 
-function Film({ id, title, posterURL, overview, releaseDate }) {
+function Film({ id, posterURL }) {
     return (
+        <Link to={`/sessoes/${id}`}>
         <Poster>
             <img src={posterURL} />
         </Poster>
+        </Link>
     )
 }
 
@@ -46,5 +56,3 @@ margin: 7px 15px 7px 15px;
 display: flex;
 justify-content: center;
 `
-
-/*films.map(film => <Film id = {film.id}, title = {film.title}, posterURL = {film.posterURL}, overview = {film.overview}, releaseDate = {film.releaseDate} />)*/
