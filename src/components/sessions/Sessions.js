@@ -1,40 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import styled from 'styled-components';
-
-export default function Sessions() {
-    const { idFilme } = useParams();
-    const [sessions, setSessions] = useState({});
-    useEffect(() => {
-        const promise = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/movies/${idFilme}/showtimes`); 
-        promise.then(response => {
-            setSessions({ ...response.data })
-        });
-    }, [])
-    console.log(sessions.days)
-    return (
-        <>
-        <Link to={"/"}>
-        <div className="header">
-                <h1>CINEFLEX</h1>
-            </div>
-        </Link>
-            
-            <div className="select">
-                <h3>Selecione o horário</h3>
-            </div>
-            <Container>
-                {
-                    sessions.days !== undefined ?
-                        sessions.days.map(session => { <Session weekday={session.weekday} date = {session.date} showtimes = {session.showtimes}/> }) :
-                        <></>
-                }
-            </Container>
-        </>
-    )
-}
 
 function Session({ weekday, date, showtimes }) {
     return (
@@ -43,14 +11,48 @@ function Session({ weekday, date, showtimes }) {
                 <p>{`${weekday} - ${date}`}</p>
             </Data>
             <Hours>
-                {showtimes.map(showtime => {
-                    return (
-                        <Hour>
-                            <p>{showtime.name}</p>
-                        </Hour>
-                    )
-                })}
+                <Session showtimes={showtimes} />
             </Hours>
+
+            {showtimes.map(showtime =>
+                <Hour>
+                    <p>{showtime.name}</p>
+                </Hour>
+            )}
+        </>
+    )
+}
+
+export default function Sessions() {
+    const { idFilme } = useParams();
+    const [sessions, setSessions] = useState([]);
+    const [movies, setMovies] = useState({});
+    useEffect(() => {
+        const promise = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/movies/${idFilme}/showtimes`);
+        promise.then(response => {
+            setSessions(response.data.days);
+            setMovies(response.data)
+        });
+    }, [])
+    console.log(sessions)
+
+    return (
+        <>
+            <Link to={"/"}>
+                <div className="header">
+                    <h1>CINEFLEX</h1>
+                </div>
+            </Link>
+            <div className="select">
+                <h3>Selecione o horário</h3>
+            </div>
+            <Container>
+                {
+                    sessions.map((session, index) =>
+                        <Session key={index} weekday={session.weekday} date={session.date} showtimes={session.showtimes} />
+                    )
+                }
+            </Container>
         </>
     )
 }
